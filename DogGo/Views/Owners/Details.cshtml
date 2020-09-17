@@ -46,7 +46,17 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NeighborhoodId)
         </dd>
-        
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Dogs)
+        </dt>
+        @foreach (Dog dog in Model.Dogs)
+        {
+    <dd class="col-sm-10">
+        @dog.Name  @dog.Breed
+    </dd>
+            
+        }
+
     </dl>
 </div>
 <div>
