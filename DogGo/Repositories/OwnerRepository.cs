@@ -68,35 +68,15 @@ namespace DogGo.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    List<Dog> dogs = new List<Dog>();
-
-                    cmd.CommandText = @"
-                        SELECT Name, Breed
-                        FROM Dog
-                        WHERE OwnerId = @id";
-
-                    cmd.Parameters.AddWithValue("@id", id);
-
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        Dog dog = new Dog
-                        {
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            Breed = reader.GetString(reader.GetOrdinal("Breed"))
-                        };
-                        dogs.Add(dog);
-                    }
-                    reader.Close();
-
-                    
                     cmd.CommandText = @"
                         SELECT Id, [Name], Email, Address, Phone, NeighborhoodId
                         FROM Owner
                         WHERE Id = @id";
 
-                    reader = cmd.ExecuteReader();
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
                     if (reader.Read())
                     {
                         Owner owner = new Owner()
@@ -106,18 +86,15 @@ namespace DogGo.Repositories
                             Email = reader.GetString(reader.GetOrdinal("Email")),
                             Address = reader.GetString(reader.GetOrdinal("Address")),
                             Phone = reader.GetString(reader.GetOrdinal("Phone")),
-                            NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
-                            Dogs = dogs
+                            NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
                         };
 
                         reader.Close();
                         return owner;
                     }
-                    else
-                    {
-                        reader.Close();
-                        return null;
-                    }
+
+                    reader.Close();
+                    return null;
                 }
             }
         }
