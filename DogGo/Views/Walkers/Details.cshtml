@@ -1,42 +1,75 @@
-﻿@model DogGo.Models.Walker
+﻿@model DogGo.Models.ViewModels.WalkerProfileViewModel
 
-@{
-    ViewData["Title"] = "Details";
-}
 
-<h1>Details</h1>
-
+    @{ ViewData["Title"] = "Profile"; }
 <div>
-    <h4>Walker</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NeighborhoodId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NeighborhoodId)
-        </dd>
-        <dt class = "col-sm-2">
-            Avatar
-        </dt>
-        <dd class = "col-sm-10">
-            <img class="bg-info" src="@Model.ImageUrl" alt="avatar" />
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+    <h1 class="mb-4">@Model.Walker.Name</h1>
+
+    <section class="container">
+        <img style="width:100px;float:left;margin-right:20px"
+             src="@Model.Walker.ImageUrl" alt="avatar" />
+        <div>
+            <label class="font-weight-bold">Name:</label>
+            <span>@Model.Walker.Name</span>
+        </div>
+        <div>
+            <label class="font-weight-bold">Address:</label>
+            <span>@Model.Walker.Neighborhood.Name</span>
+        </div>
+    </section>
+
+    <hr class="mt-5" />
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <section class="col-8 container mt-5">
+            <h1 class="text-left">Walks</h1>
+
+            <div class="row">
+                <section class="col-8 container mt-5">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Walks[0].Date)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Walks[0].Owner.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Walks[0].Duration)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Walks)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Date
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Owner.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DurationInMinutes) minutes
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </section>
+                <section class="col-lg-4 col-md-8 container mt-5">
+                    <h4>Total Walk Time: @Html.DisplayFor(model => model.TotalDuration)</h4>
+                </section>
+            </div>
+        </section>
+    </div>
+    <div>
+        
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+
+
+
