@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DogGo.Models;
+using DogGo.Models.ViewModels;
 using DogGo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,13 @@ namespace DogGo.Controllers
     {
 
         private readonly IDogRepository _dogRepo;
+        private readonly IOwnerRepository _ownerRepo;
 
         // ASP.NET will give us an instance of our Owner Repository. This is called "Dependency Injection"
-        public DogsController(IDogRepository dogRepository)
+        public DogsController(IDogRepository dogRepository, IOwnerRepository ownerRepository)
         {
             _dogRepo = dogRepository;
+            _ownerRepo = ownerRepository;
         }
         // GET: DogsController1
         public IActionResult Index()
@@ -44,7 +47,13 @@ namespace DogGo.Controllers
         // GET: DogsController1/Create
         public ActionResult Create()
         {
-            return View();
+            List<Owner> owners = _ownerRepo.GetAllOwners();
+            DogFormViewModel vm = new DogFormViewModel()
+            {
+                Dog = new Dog(),
+                Owners = owners
+            };
+            return View(vm);
         }
 
         // POST: Dogs/Create
@@ -67,14 +76,18 @@ namespace DogGo.Controllers
         // GET: DogsController/Edit/5
         public ActionResult Edit(int id)
         {
-            Dog dog = _dogRepo.GetDogById(id);
-
-            if (dog == null)
+            List<Owner> owners = _ownerRepo.GetAllOwners();
+            DogFormViewModel vm = new DogFormViewModel()
+            {
+                Dog = _dogRepo.GetDogById(id),
+                Owners = owners
+            };
+            if (vm == null)
             {
                 return NotFound();
             }
 
-            return View(dog);
+            return View(vm);
         }
 
         // POST: Dogs/Edit/5
