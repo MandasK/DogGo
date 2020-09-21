@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DogGo.Models;
 using DogGo.Models.ViewModels;
@@ -14,22 +15,33 @@ namespace DogGo.Controllers
 
         private readonly IWalkerRepository _walkerRepo;
         private readonly IWalksRepository _walksRepo;
+        private readonly IOwnerRepository _ownerRepo;
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public WalkersController(IWalkerRepository walkerRepository, IWalksRepository walksRepository)
+        public WalkersController(IWalkerRepository walkerRepository, IWalksRepository walksRepository, IOwnerRepository ownerRepository)
         {
             _walkerRepo = walkerRepository;
             _walksRepo = walksRepository;
+            _ownerRepo = ownerRepository;
         }
 
         public IActionResult Index()
         {
             // GET: Walkers
-            
-                List<Walker> walkers = _walkerRepo.GetAllWalkers();
+            int currentUserId = GetCurrentUserId();
 
-                return View(walkers);
-            
+            List<Walker> walkers = new List<Walker>();
+            if (currentUserId != 0)
+            {
+                Owner currentUser = _ownerRepo.GetOwnerById(currentUserId);
+                walkers = _walkerRepo.GetWalkersInNeighborhood(currentUser.NeighborhoodId);
+            }
+            else
+            {
+                walkers = _walkerRepo.GetAllWalkers();
+            }
+
+            return View(walkers);
         }
 
         
@@ -44,6 +56,19 @@ namespace DogGo.Controllers
             };
 
             return View(vm);
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                return int.Parse(id);
+            }
+            catch (ArgumentNullException)
+            {
+                return 0;
+            }
         }
 
     }
