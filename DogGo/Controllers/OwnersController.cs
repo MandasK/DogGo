@@ -117,7 +117,14 @@ namespace DogGo.Controllers
             }
             catch (Exception ex)
             {
-                return View(owner);
+                List<Neighborhood> neighborhoods = _neighborhoodRepo.GetAll();
+
+                OwnerFormViewModel vm = new OwnerFormViewModel()
+                {
+                    Owner = new Owner(),
+                    Neighborhoods = neighborhoods
+                };
+                return View(vm);
             }
         }
 
@@ -182,6 +189,12 @@ namespace DogGo.Controllers
             {
                 return View(owner);
             }
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

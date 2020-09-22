@@ -19,7 +19,7 @@ namespace DogGo.Models.ViewModels
             double totalMinutes = 0;
             foreach (Walks walk in Walks)
             {
-                total += walk.DurationInMinutes;
+                total += walk.Duration / 60;
                 totalHours = Math.Floor(total / 60);
                 totalMinutes = total % 60;
             }

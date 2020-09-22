@@ -52,7 +52,8 @@
                                         @Html.DisplayFor(modelItem => item.Owner.Name)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.DurationInMinutes) minutes
+                                        @{ int durationInMinutes = item.Duration / 60; }
+                                        @Html.DisplayFor(modelItem => durationInMinutes) minutes
                                     </td>
                                 </tr>
                             }
@@ -60,6 +61,7 @@
                     </table>
                 </section>
                 <section class="col-lg-4 col-md-8 container mt-5">
+
                     <h4>Total Walk Time: @Html.DisplayFor(model => model.TotalDuration)</h4>
                 </section>
             </div>
